@@ -32,7 +32,7 @@ public class PostServiceImplementation implements PostService {
     }
 
     @Override
-    public List<PostDTO> getBlogs() {
+    public List<PostDTO> getPosts() {
         List<Post> posts = postRepository.findAll();
         if (posts.isEmpty()) {
             log.error("there is no post created yet");
@@ -61,42 +61,51 @@ public class PostServiceImplementation implements PostService {
         post.setCreatedAt(Instant.now());
         post.setUpdatedAt(Instant.now());
         postRepository.save(post);
-        String URI = "/api/v1/post/";
+        String URI = "/api/v1/posts/";
         LocalDate publishDate = LocalDate.ofInstant(post.getCreatedAt(), ZoneOffset.UTC);
 
         return new PostResponseDTO(
-                post.getTittle(),
+                post.getTitle(),
                 post.getContent(),
                 post.getUsername(),
                 publishDate,
-                URI.concat(titleToURI(post.getTittle())),
-                String.format("Post '%s' saved successfully.", post.getTittle())
+                URI.concat(titleToURI(post.getTitle())),
+                String.format("Post '%s' saved successfully.", post.getTitle())
         );
     }
 
     @Override
-    public Post updatePost(PostUpdateDTO postDTO) {
-        Post post = modelMapper.map(findPostByTitle(postDTO.getTittle()), Post.class);
+    public ApiResponse updatePost(PostUpdateDTO postDTO) {
+        Post post = getPost(postDTO.getTitle());
 
-        if (!post.getTittle().equals(postDTO.getNewTitle())) {
-            post.setTittle(postDTO.getNewTitle());
+        if (postDTO.getNewTitle() != null && !post.getTitle().equals(postDTO.getNewTitle())) {
+            post.setTitle(postDTO.getNewTitle());
         }
-        post.setContent(postDTO.getNewContent());
+        if (postDTO.getContent() != null) post.setContent(postDTO.getContent());
         post.setUpdatedAt(Instant.now());
-
-        return postRepository.save(post);
+        postRepository.save(post);
+        return new ApiResponse(String.format("Blog post '%s' updated successfully.", post.getTitle()));
     }
 
     @Override
     public ApiResponse deletePost(String title) {
-        Post post = modelMapper.map(findPostByTitle(title), Post.class);
+        Post post = getPost(title);
         postRepository.deleteById(post.getId());
 
-        return new ApiResponse(String.format("Post '%s' deleted successfully.", title));
+        return new ApiResponse(String.format("Blog post '%s' deleted successfully.", title));
+    }
+
+    private Post getPost(String title) {
+        Optional<Post> optional = postRepository.findPostByTitle(title);
+        if (optional.isPresent()) return optional.get();
+        else {
+            log.error(String.format("findPostByTitle() // No post with title: %s", title));
+            throw new NoPostException(String.format("No post with title: %s", title));
+        }
     }
 
     private String titleToURI(String title) {
-        String[] titleArray = title.split(" ");
+        String[] titleArray = title.toLowerCase().split(" ");
         StringBuilder stringBuilder = new StringBuilder();
         for (String s : titleArray) {
             stringBuilder.append(s).append("-");

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class PostResponseDTO {
 
-    private String tittle;
+    private String title;
     private String content;
     @JsonProperty(value = "author_name")
     private String authorName;

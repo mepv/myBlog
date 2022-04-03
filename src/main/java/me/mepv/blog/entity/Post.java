@@ -21,7 +21,7 @@ import java.time.Instant;
 public class Post extends BaseEntity {
 
     @NotBlank
-    private String tittle;
+    private String title;
     @Lob
     @NotEmpty
     private String content;

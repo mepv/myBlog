@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -15,14 +14,9 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class PostUpdateDTO {
 
-    @NotBlank
-    private String tittle;
-    @NotBlank
+    @NotBlank(message = "The tittle is required.")
+    private String title;
     @JsonProperty(value = "new_title")
     private String newTitle;
-    @NotEmpty
-    @JsonProperty(value = "new_content")
-    private String newContent;
-    @NotBlank
-    private String username;
+    private String content;
 }
