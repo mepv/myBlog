@@ -15,7 +15,7 @@ import javax.validation.constraints.NotEmpty;
 public class PostDTO {
 
     @NotBlank
-    private String tittle;
+    private String title;
     @NotEmpty
     private String content;
     @NotBlank
