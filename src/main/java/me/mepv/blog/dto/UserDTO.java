@@ -1,4 +1,4 @@
-package me.mepv.blog.entity;
+package me.mepv.blog.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,18 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.mepv.blog.security.Role;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.validation.Valid;
 
-@Entity
-@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class User extends BaseEntity {
+@Valid
+public class UserDTO {
 
-    // todo: implement/add UUID
     private String username;
     private String password;
     private String email;

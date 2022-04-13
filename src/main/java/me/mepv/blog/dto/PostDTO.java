@@ -18,6 +18,4 @@ public class PostDTO {
     private String title;
     @NotEmpty
     private String content;
-    @NotBlank
-    private String username;
 }
