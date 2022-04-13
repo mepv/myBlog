@@ -27,6 +27,4 @@ public class Post extends BaseEntity {
     private String content;
     private Instant createdAt;
     private Instant updatedAt;
-    @NotBlank
-    private String username;
 }

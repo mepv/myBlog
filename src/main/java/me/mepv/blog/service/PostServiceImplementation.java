@@ -8,6 +8,7 @@ import me.mepv.blog.dto.PostUpdateDTO;
 import me.mepv.blog.entity.Post;
 import me.mepv.blog.exception.NoPostException;
 import me.mepv.blog.repository.PostRepository;
+import me.mepv.blog.security.AppUserDetailsServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +24,14 @@ import java.util.stream.Collectors;
 public class PostServiceImplementation implements PostService {
 
     private final PostRepository postRepository;
-
+    private final AppUserDetailsServiceImpl appUserDetailsService;
     private final ModelMapper modelMapper;
 
-    public PostServiceImplementation(PostRepository postRepository, ModelMapper modelMapper) {
+    public PostServiceImplementation(PostRepository postRepository,
+                                     AppUserDetailsServiceImpl appUserDetailsService,
+                                     ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.appUserDetailsService = appUserDetailsService;
         this.modelMapper = modelMapper;
     }
 
@@ -67,7 +71,7 @@ public class PostServiceImplementation implements PostService {
         return new PostResponseDTO(
                 post.getTitle(),
                 post.getContent(),
-                post.getUsername(),
+                appUserDetailsService.getCurrentUser(),
                 publishDate,
                 URI.concat(titleToURI(post.getTitle())),
                 String.format("Post '%s' saved successfully.", post.getTitle())
